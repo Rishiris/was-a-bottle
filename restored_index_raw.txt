@@ -1,0 +1,208 @@
+Created At: 2026-07-29T14:29:01Z
+Completed At: 2026-07-29T14:29:01Z
+File Path: `file:///c:/Users/Rishikesh/Downloads/was-a-bottle/src/index.css`
+Total Lines: 1750
+Total Bytes: 48068
+Showing lines 1 to 200
+The following code has been modified to include a line number before every line, in the format: <line_number>: <original_line>. Please note that any changes targeting the original code should remove the line number, colon, and leading space.
+1: /* ==========================================================================
+2:    WAS A BOTTLE — E-COMMERCE DESIGN SYSTEM & STYLESHEET
+3:    Design Language: "Bottle Becomes Light"
+4:    ========================================================================== */
+5: 
+6: :root {
+7:   --bg: #0f201a;
+8:   --bg-panel: #16281f;
+9:   --bg-panel-2: #1c3226;
+10:   --bg-panel-light: #233b2e;
+11:   --amber: #e7a33e;
+12:   --amber-hover: #f2b055;
+13:   --amber-deep: #c97a2b;
+14:   --sage: #a8c0a0;
+15:   --cream: #f3eee2;
+16:   --muted: #9fb0a4;
+17:   --line: rgba(243, 238, 226, 0.14);
+18:   --line-strong: rgba(243, 238, 226, 0.28);
+19:   --radius: 4px;
+20:   --radius-lg: 12px;
+21:   --shadow-glow: 0 0 35px rgba(231, 163, 62, 0.25);
+22:   --shadow-card: 0 16px 40px rgba(0, 0, 0, 0.4);
+23: }
+24: 
+25: *, *::before, *::after {
+26:   box-sizing: border-box;
+27:   margin: 0;
+28:   padding: 0;
+29: }
+30: 
+31: html {
+32:   scroll-behavior: smooth;
+33: }
+34: 
+35: body {
+36:   background: var(--bg);
+37:   color: var(--cream);
+38:   font-family: 'Space Grotesk', -apple-system, sans-serif;
+39:   line-height: 1.55;
+40:   overflow-x: hidden;
+41:   -webkit-font-smoothing: antialiased;
+42: }
+43: 
+44: h1, h2, h3, h4, .font-serif {
+45:   font-family: 'Fraunces', serif;
+46:   font-weight: 560;
+47:   letter-spacing: -0.01em;
+48:   color: var(--cream);
+49: }
+50: 
+51: a {
+52:   color: inherit;
+53:   text-decoration: none;
+54: }
+55: 
+56: button, input, select, textarea {
+57:   font-family: inherit;
+58:   color: inherit;
+59: }
+60: 
+61: .mono {
+62:   font-family: 'JetBrains Mono', monospace;
+63:   letter-spacing: 0.08em;
+64:   text-transform: uppercase;
+65: }
+66: 
+67: .eyebrow {
+68:   font-family: 'JetBrains Mono', monospace;
+69:   font-size: 12px;
+70:   letter-spacing: 0.12em;
+71:   color: var(--amber);
+72:   display: inline-flex;
+73:   align-items: center;
+74:   gap: 8px;
+75:   margin-bottom: 14px;
+76: }
+77: .eyebrow::before {
+78:   content: "";
+79:   width: 20px;
+80:   height: 1px;
+81:   background: var(--amber);
+82:   display: inline-block;
+83: }
+84: 
+85: .section-padding {
+86:   padding: 80px 6vw;
+87: }
+88: 
+89: .section-container {
+90:   max-width: 1280px;
+91:   margin: 0 auto;
+92: }
+93: 
+94: /* ---------- BUTTONS ---------- */
+95: .btn {
+96:   font-family: 'JetBrains Mono', monospace;
+97:   font-size: 12px;
+98:   letter-spacing: 0.1em;
+99:   text-transform: uppercase;
+100:   padding: 14px 26px;
+101:   border-radius: var(--radius);
+102:   display: inline-flex;
+103:   align-items: center;
+104:   justify-content: center;
+105:   gap: 10px;
+106:   transition: all 0.25s ease;
+107:   cursor: pointer;
+108:   border: 1px solid transparent;
+109: }
+110: .btn-solid {
+111:   background: var(--amber);
+112:   color: #1a1206;
+113:   font-weight: 600;
+114: }
+115: .btn-solid:hover {
+116:   transform: translateY(-2px);
+117:   background: var(--amber-hover);
+118:   box-shadow: 0 6px 20px rgba(231, 163, 62, 0.4);
+119: }
+120: .btn-ghost {
+121:   border-color: var(--line);
+122:   color: var(--cream);
+123:   background: transparent;
+124: }
+125: .btn-ghost:hover {
+126:   border-color: var(--amber);
+127:   color: var(--amber);
+128:   transform: translateY(-2px);
+129: }
+130: 
+131: /* ---------- NAVIGATION HEADER ---------- */
+132: .nav-header {
+133:   position: fixed;
+134:   top: 0;
+135:   left: 0;
+136:   right: 0;
+137:   z-index: 100;
+138:   padding: 22px 6vw;
+139:   transition: all 0.35s ease;
+140:   border-bottom: 1px solid transparent;
+141: }
+142: .nav-header.nav-scrolled {
+143:   background: rgba(15, 32, 26, 0.92);
+144:   backdrop-filter: blur(12px);
+145:   padding: 14px 6vw;
+146:   border-bottom: 1px solid var(--line);
+147: }
+148: .nav-container {
+149:   display: flex;
+150:   align-items: center;
+151:   justify-content: space-between;
+152:   max-width: 1280px;
+153:   margin: 0 auto;
+154: }
+155: 
+156: .wordmark-btn {
+157:   background: none;
+158:   border: none;
+159:   cursor: pointer;
+160:   display: flex;
+161:   flex-direction: column;
+162:   line-height: 0.95;
+163:   text-align: left;
+164: }
+165: .wordmark-was {
+166:   font-family: 'JetBrains Mono', monospace;
+167:   font-size: 10px;
+168:   letter-spacing: 0.25em;
+169:   color: var(--muted);
+170:   text-transform: uppercase;
+171: }
+172: .wordmark-bottle {
+173:   font-family: 'Fraunces', serif;
+174:   font-style: italic;
+175:   font-size: 26px;
+176:   color: var(--cream);
+177: }
+178: 
+179: .desktop-nav {
+180:   display: flex;
+181:   gap: 28px;
+182:   font-size: 14px;
+183: }
+184: .nav-link {
+185:   background: none;
+186:   border: none;
+187:   color: var(--muted);
+188:   cursor: pointer;
+189:   transition: color 0.25s ease;
+190:   padding: 6px 0;
+191:   position: relative;
+192:   display: inline-flex;
+193:   align-items: center;
+194:   gap: 6px;
+195: }
+196: .nav-link:hover, .nav-link.active {
+197:   color: var(--cream);
+198: }
+199: .nav-link.active::after {
+200:   content: "";
+The above content does NOT show the entire file contents. If you need to view any lines of the file which were not shown to complete your task, call this tool again to view those lines.
