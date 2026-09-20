@@ -1,6 +1,6 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useCart } from "../context/CartContext";
-import { PRODUCTS } from "../data/products";
+import { PRODUCTS, ALL_PRODUCTS } from "../data/products";
 import { ProductVisual } from "../components/BottleVisual";
 import { Star, Sun, Moon, ShoppingBag, ShieldCheck, Truck, RefreshCw, Tag, ChevronRight, CheckCircle2, MessageSquarePlus } from "lucide-react";
 
@@ -13,8 +13,16 @@ export function ProductDetailPage() {
   const [reviewModalOpen, setReviewModalOpen] = useState(false);
   const [newReview, setNewReview] = useState({ user: "", rating: 5, comment: "" });
 
-  const product = PRODUCTS.find((p) => p.id === selectedProductId) || PRODUCTS[0];
-  const relatedProducts = PRODUCTS.filter((p) => p.category === product.category && p.id !== product.id).slice(0, 3);
+  const product = ALL_PRODUCTS.find((p) => p.id === selectedProductId) || ALL_PRODUCTS[0];
+  const relatedProducts = ALL_PRODUCTS.filter((p) => p.category === product.category && p.id !== product.id).slice(0, 3);
+
+  // Scroll to top whenever the product changes — the most reliable place to do it
+  // because this runs AFTER React has committed the new PDP DOM to the screen.
+  useEffect(() => {
+    window.scrollTo(0, 0);
+    document.documentElement.scrollTop = 0;
+    document.body.scrollTop = 0;
+  }, [selectedProductId]);
 
   const handleAddToCart = () => {
     addToCart(product, quantity, engravingText);
@@ -55,7 +63,19 @@ export function ProductDetailPage() {
         <div className="pdp-main-grid">
           {/* Visual Interactive Column */}
           <div className="pdp-visual-col">
-            <div className={`pdp-stage-box ${isLit ? "lit-mode" : "dark-mode"}`}>
+            {/* Product Photo (if available) */}
+            {product.image && (
+              <div className="pdp-product-photo-wrap">
+                <img
+                  src={product.image}
+                  alt={product.name}
+                  className="pdp-product-photo"
+                  loading="eager"
+                />
+              </div>
+            )}
+
+            <div className={`pdp-stage-box ${isLit ? "lit-mode" : "dark-mode"} ${product.image ? "pdp-stage-compact" : ""}`}>
               <ProductVisual product={product} isLit={isLit} size="pdp" />
 
               {product.category === "Lighting" && (
@@ -182,6 +202,14 @@ export function ProductDetailPage() {
             >
               Specifications & Craft
             </button>
+            {product.articles && product.articles.length > 0 && (
+              <button
+                className={`pdp-tab-btn ${activeTab === "articles" ? "active" : ""}`}
+                onClick={() => setActiveTab("articles")}
+              >
+                Articles & Editorials
+              </button>
+            )}
             <button
               className={`pdp-tab-btn ${activeTab === "care" ? "active" : ""}`}
               onClick={() => setActiveTab("care")}
@@ -211,6 +239,22 @@ export function ProductDetailPage() {
                     </>
                   )}
                 </ul>
+                {product.provenance && (
+                  <div className="tab-provenance-note">
+                    <span className="mono">PROVENANCE: </span>{product.provenance}
+                  </div>
+                )}
+              </div>
+            )}
+
+            {activeTab === "articles" && product.articles && (
+              <div className="tab-panel tab-articles-panel">
+                {product.articles.map((article, idx) => (
+                  <article key={idx} className="pdp-article">
+                    <h3 className="pdp-article-title">{article.title}</h3>
+                    <p className="pdp-article-body">{article.body}</p>
+                  </article>
+                ))}
               </div>
             )}
 
@@ -233,6 +277,25 @@ export function ProductDetailPage() {
             )}
           </div>
         </div>
+
+        {/* ── EDITORIAL ARTICLES ── Below the purchase area */}
+        {product.articles && product.articles.length > 0 && (
+          <div className="pdp-editorial-section">
+            <div className="pdp-editorial-header">
+              <div className="eyebrow mono">EDITORIAL · THE STORY BEHIND THIS PIECE</div>
+              <h2>Read more about the {product.name}</h2>
+            </div>
+            <div className="pdp-editorial-grid">
+              {product.articles.map((article, idx) => (
+                <article key={idx} className="pdp-editorial-card">
+                  <div className="pdp-editorial-num mono">0{idx + 1}</div>
+                  <h3>{article.title}</h3>
+                  <p>{article.body}</p>
+                </article>
+              ))}
+            </div>
+          </div>
+        )}
 
         {/* Customer Reviews Section */}
         <div className="pdp-reviews-section">
@@ -268,21 +331,39 @@ export function ProductDetailPage() {
           </div>
         </div>
 
-        {/* Related Products Grid */}
+        {/* Related Products Grid — same category only */}
         {relatedProducts.length > 0 && (
           <div className="pdp-related-section">
-            <h2>You Might Also Like</h2>
+            <div className="pdp-related-header">
+              <div className="eyebrow mono">MORE FROM THIS CATEGORY</div>
+              <h2>More {product.category}</h2>
+            </div>
             <div className="products-grid">
               {relatedProducts.map((rel) => (
-                <div key={rel.id} className="product-card">
+                <div
+                  key={rel.id}
+                  className="product-card pdp-related-card"
+                  onClick={() => navigateTo("pdp", rel.id)}
+                  style={{ cursor: "pointer" }}
+                >
                   <div className="product-card-visual">
-                    <ProductVisual product={rel} isLit={true} size="card" />
+                    {rel.image ? (
+                      <img
+                        src={rel.image}
+                        alt={rel.name}
+                        className="related-card-img"
+                        loading="lazy"
+                      />
+                    ) : (
+                      <ProductVisual product={rel} isLit={true} size="card" />
+                    )}
                   </div>
                   <div className="product-card-info">
-                    <h3 onClick={() => navigateTo("pdp", rel.id)} className="product-title-link">
-                      {rel.name}
-                    </h3>
-                    <span className="card-price">${rel.price}</span>
+                    <h3 className="product-title-link">{rel.name}</h3>
+                    <div className="related-card-footer">
+                      <span className="card-price">${rel.price}</span>
+                      <span className="related-card-cta mono">View →</span>
+                    </div>
                   </div>
                 </div>
               ))}

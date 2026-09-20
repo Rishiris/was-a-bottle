@@ -17,6 +17,7 @@ export function CartProvider({ children }) {
   const [quickViewProduct, setQuickViewProduct] = useState(null);
   const [currentPage, setCurrentPage] = useState("home");
   const [selectedProductId, setSelectedProductId] = useState("wab-101");
+  const [shopCategory, setShopCategory] = useState("all"); // pre-filter for ShopPage
   const [appliedPromo, setAppliedPromo] = useState(null); // { code: 'RECYCLE10', discountPercent: 10 }
   const [carbonOffset, setCarbonOffset] = useState(true);
   const [toast, setToast] = useState(null);
@@ -106,11 +107,33 @@ export function CartProvider({ children }) {
     showToast("Promo code removed.");
   };
 
-  const navigateTo = (page, productId = null) => {
+  const navigateTo = (page, productId = null, category = null) => {
+    // 1. Update state first
     setCurrentPage(page);
     if (productId) setSelectedProductId(productId);
-    window.scrollTo({ top: 0, behavior: "smooth" });
+    // If navigating to shop with a specific category, set the shop filter
+    if (page === "shop" && category) setShopCategory(category);
+    else if (page === "shop" && !category) setShopCategory("all");
+
+    // 2. Double-rAF: first frame schedules re-render, second frame fires after paint
+    requestAnimationFrame(() => {
+      requestAnimationFrame(() => {
+        window.scrollTo(0, 0);
+        document.documentElement.scrollTop = 0;
+        document.body.scrollTop = 0;
+      });
+    });
+
+    // 3. Extra fallback — handles Lenis which may re-scroll after its own tick
+    setTimeout(() => {
+      window.scrollTo(0, 0);
+      document.documentElement.scrollTop = 0;
+      document.body.scrollTop = 0;
+    }, 60);
   };
+
+  // Convenience: navigate to shop with a pre-selected category filter
+  const navigateToShop = (category = "all") => navigateTo("shop", null, category);
 
   const cartSubtotal = cart.reduce(
     (sum, item) => sum + item.unitPrice * item.quantity,
@@ -141,7 +164,10 @@ export function CartProvider({ children }) {
         setCurrentPage,
         selectedProductId,
         setSelectedProductId,
+        shopCategory,
+        setShopCategory,
         navigateTo,
+        navigateToShop,
         addToCart,
         removeFromCart,
         updateQuantity,

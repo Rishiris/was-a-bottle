@@ -1,13 +1,13 @@
-import React, { useState, useMemo } from "react";
+import React, { useState, useMemo, useEffect } from "react";
 import { useCart } from "../context/CartContext";
-import { PRODUCTS, CATEGORIES } from "../data/products";
+import { ALL_PRODUCTS as PRODUCTS, CATEGORIES } from "../data/products";
 import { ProductVisual } from "../components/BottleVisual";
 import { Search, Filter, SlidersHorizontal, Eye, ShoppingBag, Star, LayoutGrid, List, RotateCcw } from "lucide-react";
 
 export function ShopPage() {
-  const { navigateTo, addToCart, setQuickViewProduct } = useCart();
+  const { navigateTo, addToCart, setQuickViewProduct, shopCategory, setShopCategory } = useCart();
 
-  const [selectedCategory, setSelectedCategory] = useState("all");
+  const [selectedCategory, setSelectedCategory] = useState(shopCategory || "all");
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedTint, setSelectedTint] = useState("all");
   const [selectedBottleType, setSelectedBottleType] = useState("all");
@@ -15,6 +15,16 @@ export function ShopPage() {
   const [sortBy, setSortBy] = useState("featured");
   const [viewMode, setViewMode] = useState("grid"); // 'grid' or 'list'
   const [mobileFilterOpen, setMobileFilterOpen] = useState(false);
+
+  // When navigated here with a pre-selected category (e.g. from home page category grid),
+  // sync it into our local filter state.
+  useEffect(() => {
+    if (shopCategory && shopCategory !== "all") {
+      setSelectedCategory(shopCategory);
+      // Reset the context value so back-navigation doesn't re-trigger filter
+      setShopCategory("all");
+    }
+  }, [shopCategory]);
 
   // Available tints and bottle types for filter
   const tints = ["Sage", "Amber", "Emerald", "Cobalt", "Clear"];
@@ -223,7 +233,17 @@ export function ShopPage() {
                 {filteredProducts.map((product) => (
                   <div key={product.id} className={`product-card ${viewMode === "list" ? "list-card" : ""}`}>
                     <div className="product-card-visual">
-                      <ProductVisual product={product} isLit={true} size="card" />
+                      {product.image ? (
+                        <img
+                          src={product.image}
+                          alt={product.name}
+                          className="product-visual-img"
+                          loading="lazy"
+                          style={{ width: "100%", height: "100%", objectFit: "cover", objectPosition: "center", display: "block" }}
+                        />
+                      ) : (
+                        <ProductVisual product={product} isLit={true} size="card" />
+                      )}
 
                       <div className="product-card-actions-overlay">
                         <button

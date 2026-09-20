@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { useCart } from "../context/CartContext";
 import { Search, ShoppingBag, Menu, X, Sparkles } from "lucide-react";
 import { PRODUCTS } from "../data/products";
@@ -14,21 +14,34 @@ export function Header() {
   } = useCart();
 
   const [scrolled, setScrolled] = useState(false);
+  const [hidden, setHidden] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
+  const lastScrollY = useRef(0);
 
   useEffect(() => {
     const handleScroll = () => {
-      setScrolled(window.scrollY > 20);
+      const currentY = window.scrollY;
+      setScrolled(currentY > 20);
+
+      // Hide on scroll down (past 120px), reveal on scroll up
+      if (currentY > 120) {
+        setHidden(currentY > lastScrollY.current && currentY > 200);
+      } else {
+        setHidden(false);
+      }
+
+      lastScrollY.current = currentY;
     };
-    window.addEventListener("scroll", handleScroll);
+
+    window.addEventListener("scroll", handleScroll, { passive: true });
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
   const navLinks = [
     { id: "home", label: "Home" },
     { id: "shop", label: "Shop All" },
-    { id: "byob", label: "BYOB Studio", highlight: true },
+    { id: "gift-sets", label: "Gift Sets", highlight: true },
     { id: "story", label: "Our Story" },
     { id: "wholesale", label: "Wholesale" },
   ];
@@ -44,7 +57,7 @@ export function Header() {
 
   return (
     <>
-      <header className={`nav-header ${scrolled ? "nav-scrolled" : ""}`}>
+      <header className={`nav-header ${scrolled ? "nav-scrolled" : ""} ${hidden ? "nav-hidden" : ""}`}>
         <div className="nav-container">
           {/* Logo */}
           <button className="wordmark-btn" onClick={() => navigateTo("home")}>
@@ -90,10 +103,10 @@ export function Header() {
             </button>
 
             <button
-              className="btn btn-ghost nav-byob-cta"
-              onClick={() => navigateTo("byob")}
+              className="btn btn-solid nav-gift-cta"
+              onClick={() => navigateTo("gift-sets")}
             >
-              Send Your Bottle
+              🎁 Gift Sets
             </button>
 
             <button
@@ -124,11 +137,11 @@ export function Header() {
             <button
               className="btn btn-solid mobile-cta"
               onClick={() => {
-                navigateTo("byob");
+                navigateTo("gift-sets");
                 setMobileMenuOpen(false);
               }}
             >
-              Send Your Bottle →
+              🎁 View Gift Sets →
             </button>
           </div>
         )}

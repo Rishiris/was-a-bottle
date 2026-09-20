@@ -19,17 +19,35 @@ export function QuickViewModal() {
   return (
     <div className="quickview-backdrop" onClick={() => setQuickViewProduct(null)}>
       <div className="quickview-modal" onClick={(e) => e.stopPropagation()}>
+        {/* Sticky close button */}
         <button
           className="quickview-close-btn"
           onClick={() => setQuickViewProduct(null)}
           aria-label="Close modal"
         >
-          <X size={22} />
+          <X size={20} />
         </button>
 
         <div className="quickview-grid">
           {/* Visual Column */}
           <div className="quickview-visual-col">
+            {/* Show real photo if available */}
+            {quickViewProduct.image && (
+              <img
+                src={quickViewProduct.image}
+                alt={quickViewProduct.name}
+                style={{
+                  width: "100%",
+                  borderRadius: "12px",
+                  objectFit: "cover",
+                  maxHeight: "260px",
+                  marginBottom: "16px",
+                  display: "block",
+                }}
+                loading="eager"
+              />
+            )}
+
             <div className={`quickview-stage ${isLit ? "stage-lit" : "stage-dark"}`}>
               <ProductVisual product={quickViewProduct} isLit={isLit} size="large" />
 
@@ -39,8 +57,8 @@ export function QuickViewModal() {
                     className={`light-switch-btn ${isLit ? "active" : ""}`}
                     onClick={() => setIsLit(!isLit)}
                   >
-                    {isLit ? <Sun size={16} /> : <Moon size={16} />}
-                    <span>{isLit ? "Lights On (Glowing)" : "Lights Off (Glass View)"}</span>
+                    {isLit ? <Sun size={15} /> : <Moon size={15} />}
+                    <span>{isLit ? "Lights On" : "Lights Off"}</span>
                   </button>
                 </div>
               )}
@@ -59,7 +77,7 @@ export function QuickViewModal() {
             <div className="quickview-price-rating">
               <span className="qv-price">${quickViewProduct.price}</span>
               <div className="qv-rating">
-                <Star size={16} fill="#e7a33e" color="#e7a33e" />
+                <Star size={15} fill="#e7a33e" color="#e7a33e" />
                 <span>{quickViewProduct.rating} ({quickViewProduct.reviewCount} reviews)</span>
               </div>
             </div>

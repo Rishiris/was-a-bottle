@@ -81,10 +81,10 @@ export function Footer() {
           <div className="footer-col">
             <h4 className="mono">SHOP</h4>
             <button onClick={() => navigateTo("shop")}>All Collection</button>
-            <button onClick={() => navigateTo("shop")}>Pendant Lighting</button>
-            <button onClick={() => navigateTo("shop")}>Drinkware & Tumblers</button>
-            <button onClick={() => navigateTo("shop")}>Soy Wax Candles</button>
-            <button onClick={() => navigateTo("byob")}>BYOB Custom Studio</button>
+            <button onClick={() => navigateTo("shop", null, "Lighting")}>Pendant Lighting</button>
+            <button onClick={() => navigateTo("shop", null, "Drinkware & Sets")}>Drinkware & Tumblers</button>
+            <button onClick={() => navigateTo("shop", null, "Eco Candles")}>Soy Wax Candles</button>
+            <button onClick={() => navigateTo("shop", null, "Engraved Products")}>Custom Engraving</button>
           </div>
 
           <div className="footer-col">
